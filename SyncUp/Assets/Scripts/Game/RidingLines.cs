@@ -15,7 +15,6 @@ public class RidingLines : MonoBehaviour {
     void Start() {
         rideSpeed = GameController.instance.rideSyncsSpeed;
         if(Random.Range(0, 2) == 0) {
-            Debug.Log("Hey");
             rideSpeed *= -1;
         }
 

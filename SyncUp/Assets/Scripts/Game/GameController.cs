@@ -89,7 +89,6 @@ public class GameController : MonoBehaviour {
         if(Input.GetMouseButtonDown(0)) {
             //Player as dynamic and add up impulse
             player.GetComponent<Rigidbody2D>().isKinematic = false;
-            player.GetComponent<Rigidbody2D>().AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
 
             //States things
             gameState = GameState.PLAYING;
