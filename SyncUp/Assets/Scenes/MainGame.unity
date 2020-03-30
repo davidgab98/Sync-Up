@@ -2603,6 +2603,8 @@ MonoBehaviour:
   jumpForce: 4
   rideSyncsSpeed: 3
   rotatingSpeed: 100
+  score: 0
+  scoreText: {fileID: 155639288}
   horizontalLimitLeft: -2.25
   horizontalLimitRight: 2.25
 --- !u!4 &1112752231

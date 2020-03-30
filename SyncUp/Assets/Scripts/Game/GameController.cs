@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum GameState { START, PLAYING, PAUSE, RESUME, GAMEOVER, WIN };
 
@@ -8,20 +9,29 @@ public class GameController : MonoBehaviour {
     public static GameController instance;
 
     // GAME STATE VARIABLES
+    [Header("Game State Variables")]
     public GameState gameState = GameState.START;
     public GameObject pauseWall, gameoverWall, winWall, startWall, gameWall;
 
     // PLAYER
+    [Header("Player")]
     public float jumpForce = 5;
     GameObject player;
 
-    // SYNCS
+    // SYNCS STRUCTURES
+    [Header("Syncs Structures")]
     public float rideSyncsSpeed = 3;
     public float rotatingSpeed = 5;
 
-    // LIMITS DISTANCES
-    public float horizontalLimitLeft, horizontalLimitRight;
+    // Score
+    [Header("Score")]
+    public int score;
+    public Text scoreText;
 
+    // LIMITS DISTANCES
+    [Header("Limit Distances")]
+    public float horizontalLimitLeft;
+    public float horizontalLimitRight;
 
     public void Awake() {
         //Instance
@@ -37,9 +47,13 @@ public class GameController : MonoBehaviour {
     }
 
     void Start() {
-        PrepareWalls();
         gameState = GameState.START;
         Time.timeScale = 1;
+
+        PrepareWalls();
+
+        score = 0;
+        scoreText.text = score.ToString();
     }
 
     void PrepareWalls() {
@@ -55,15 +69,20 @@ public class GameController : MonoBehaviour {
             CheckStart();
         } else if(gameState == GameState.PAUSE) {
             Pause();
-        }else if(gameState == GameState.WIN) {
+        }else if(gameState  == GameState.WIN) {
             Win();
-        }else if(gameState == GameState.GAMEOVER) {
+        }else if(gameState  == GameState.GAMEOVER) {
             GameOver();
         } else if(gameState == GameState.RESUME) {
             Resume();
         } else if(gameState == GameState.PLAYING) {
             
         }
+    }
+
+    public void ScoreUp() {
+        score++;
+        scoreText.text = score.ToString();
     }
 
     void CheckStart() {

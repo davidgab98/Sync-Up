@@ -29,13 +29,24 @@ public class PlayerCollisions : MonoBehaviour {
     }
 
     void CheckSynchronization(GameObject syncStructure) {
-        if(smallSync && bigSync) {                                               //All Syncs less EasySync and SawSync
-            Destroy(syncStructure);
-        } else if(syncStructure.transform.CompareTag("easySync") && smallSync) { //EasySync
-            Destroy(syncStructure);
-        } else if(syncStructure.transform.CompareTag("sawSync") && smallSync) {  //SawSync
+        if(IsSynchronizationCompleted(syncStructure)){
+            GameController.instance.ScoreUp();
             Destroy(syncStructure);
         }
+    }
+
+    bool IsSynchronizationCompleted(GameObject syncStructure) {
+        bool synchroCompleted = false;
+
+        if(smallSync && bigSync) {                                               //All Syncs less EasySync and SawSync
+            synchroCompleted = true;
+        } else if(syncStructure.transform.CompareTag("easySync") && smallSync) { //EasySync
+            synchroCompleted = true;
+        } else if(syncStructure.transform.CompareTag("sawSync") && smallSync) {  //SawSync
+            synchroCompleted = true;
+        }
+
+        return synchroCompleted;
     }
 
     void PlayerDie() {
