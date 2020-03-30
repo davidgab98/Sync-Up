@@ -14,7 +14,7 @@ public class Jump : MonoBehaviour {
 
     }
 
-    void Update() {
+    void FixedUpdate() {
         if(GameController.instance.gameState == GameState.PLAYING) {
             if(Input.GetMouseButtonDown(0)) {
                 rb2d.AddForce(transform.up * GameController.instance.jumpForce, ForceMode2D.Impulse);

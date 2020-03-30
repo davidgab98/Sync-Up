@@ -11,6 +11,11 @@ TagManager:
   - gameoverWall
   - winWall
   - startWall
+  - smallCircles
+  - bigCircle
+  - easySync
+  - saw
+  - sawSync
   layers:
   - Default
   - TransparentFX
@@ -50,4 +55,16 @@ TagManager:
     locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: LineSync
+    uniqueID: 2116281213
+    locked: 0
+  - name: smallCircleSync
+    uniqueID: 3749534985
+    locked: 0
+  - name: Player
+    uniqueID: 881188693
+    locked: 0
+  - name: BigCircleSync
+    uniqueID: 3325866743
     locked: 0

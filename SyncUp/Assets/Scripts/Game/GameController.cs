@@ -15,6 +15,14 @@ public class GameController : MonoBehaviour {
     public float jumpForce = 5;
     GameObject player;
 
+    // SYNCS
+    public float rideSyncsSpeed = 3;
+    public float rotatingSpeed = 5;
+
+    // LIMITS DISTANCES
+    public float horizontalLimitLeft, horizontalLimitRight;
+
+
     public void Awake() {
         //Instance
         if(GameController.instance == null) {
