@@ -16,6 +16,8 @@ TagManager:
   - easySync
   - saw
   - sawSync
+  - dobleSawSync
+  - teleSync
   layers:
   - Default
   - TransparentFX

@@ -19,34 +19,13 @@ public class PlayerCollisions : MonoBehaviour {
             PlayerDie();
         } else if(collision.gameObject.transform.CompareTag("bigCircle")) {
             bigSync = true;
-            CheckSynchronization(collision.gameObject.transform.parent.gameObject); //Le pasamos el gameObject del padre, el objeto que contiene toda la estructura sync
+            CheckSynchronization(collision.gameObject.transform.root.gameObject); //Le pasamos el gameObject del padre, el objeto que contiene toda la estructura sync
         } else if(collision.gameObject.transform.CompareTag("smallCircles")) {
             collision.gameObject.transform.GetChild(0).gameObject.SetActive(false);
             collision.gameObject.transform.GetChild(1).gameObject.SetActive(true);
             smallSync = true;
-            CheckSynchronization(collision.gameObject.transform.parent.gameObject); //Le pasamos el gameObject del padre, el objeto que contiene toda la estructura sync
+            CheckSynchronization(collision.gameObject.transform.root.gameObject); //Le pasamos el gameObject del padre, el objeto que contiene toda la estructura sync
         }
-    }
-
-    void CheckSynchronization(GameObject syncStructure) {
-        if(IsSynchronizationCompleted(syncStructure)){
-            GameController.instance.ScoreUp();
-            Destroy(syncStructure);
-        }
-    }
-
-    bool IsSynchronizationCompleted(GameObject syncStructure) {
-        bool synchroCompleted = false;
-
-        if(smallSync && bigSync) {                                               //All Syncs less EasySync and SawSync
-            synchroCompleted = true;
-        } else if(syncStructure.transform.CompareTag("easySync") && smallSync) { //EasySync
-            synchroCompleted = true;
-        } else if(syncStructure.transform.CompareTag("sawSync") && smallSync) {  //SawSync
-            synchroCompleted = true;
-        }
-
-        return synchroCompleted;
     }
 
     void PlayerDie() {
@@ -55,6 +34,49 @@ public class PlayerCollisions : MonoBehaviour {
             GameController.instance.gameState = GameState.GAMEOVER;
         }
     }
+
+    void CheckSynchronization(GameObject syncStructure) {
+        if(IsSynchronizationCompleted(syncStructure) && GameController.instance.gameState == GameState.PLAYING) {
+            GameController.instance.NewSynchronization(syncStructure);
+
+            Destroy(syncStructure);
+
+            bigSync = smallSync = false;
+        }
+    }
+
+    bool IsSynchronizationCompleted(GameObject syncStructure) {
+        bool synchroCompleted = false;
+
+        if((syncStructure.transform.CompareTag("easySync") ||
+            syncStructure.transform.CompareTag("sawSync") ||
+            syncStructure.transform.CompareTag("dobleSawSync"))
+            && smallSync) {
+            synchroCompleted = true;
+        } else if(syncStructure.transform.CompareTag("teleSync") && smallSync && bigSync) {
+            TeleportPlayer(syncStructure);
+            synchroCompleted = true;
+        } else if(smallSync && bigSync) {
+            synchroCompleted = true;
+        }
+
+        return synchroCompleted;
+    }
+
+    void TeleportPlayer(GameObject syncStructure) {
+        //Si hay otro "teleSync" distinto al pasado por parametro, teletransportamos el Player a el
+        GameObject[] teleportSyncs = GameObject.FindGameObjectsWithTag("teleSync");
+
+        for(int i = 0; i < teleportSyncs.Length; i++) {
+            if(teleportSyncs[i] != syncStructure) {
+                //Teleportamos player
+                transform.position = new Vector3(transform.position.x, teleportSyncs[i].transform.position.y, transform.position.z);
+                break;
+            }
+        }
+    }
+
+
 
     private void OnTriggerExit2D(Collider2D collision) {
         if(collision.gameObject.transform.CompareTag("smallCircles")) {

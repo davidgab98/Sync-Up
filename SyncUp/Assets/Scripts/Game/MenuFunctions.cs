@@ -32,7 +32,7 @@ public class MenuFunctions : MonoBehaviour
     }
 
 
-//WALLS: Tutorial, Config, Ranking and Share
+    //WALLS: Tutorial, Config, Ranking and Share
     public void OpenShare() {
         if(!wallOpened) {
             shareWall.SetActive(true);

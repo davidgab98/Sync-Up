@@ -13,13 +13,18 @@ public class RidingLines : MonoBehaviour {
     }
 
     void Start() {
+        AssignSpeed();
+
+        //Assign limits from GameController
+        horizontalLimitLeft  = GameController.instance.horizontalLimitLeft;
+        horizontalLimitRight = GameController.instance.horizontalLimitRight;
+    }
+
+    void AssignSpeed() {
         rideSpeed = GameController.instance.rideSyncsSpeed;
         if(Random.Range(0, 2) == 0) {
             rideSpeed *= -1;
         }
-
-        horizontalLimitLeft = GameController.instance.horizontalLimitLeft;
-        horizontalLimitRight = GameController.instance.horizontalLimitRight;
     }
 
     void FixedUpdate() {
@@ -34,7 +39,7 @@ public class RidingLines : MonoBehaviour {
     }
 
     void KeepBetweenBounds() {
-        if(transform.position.x <= horizontalLimitLeft || transform.position.x >= horizontalLimitRight) {
+        if(transform.position.x < horizontalLimitLeft || transform.position.x > horizontalLimitRight) {
             rideSpeed *= -1;
         }
     }

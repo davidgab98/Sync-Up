@@ -8,6 +8,10 @@ public class RotatingAroundMyself : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
+        AssignRotatingSpeed();
+    }
+
+    void AssignRotatingSpeed() {
         rotatingSpeed = GameController.instance.rotatingSpeed;
         if(Random.Range(0, 2) == 0) {
             rotatingSpeed *= -1;

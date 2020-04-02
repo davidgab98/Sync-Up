@@ -20,6 +20,7 @@ public class GameController : MonoBehaviour {
 
     // SYNCS STRUCTURES
     [Header("Syncs Structures")]
+    public SyncStructsGenerator syncStructsGenerator; 
     public float rideSyncsSpeed = 3;
     public float rotatingSpeed = 5;
 
@@ -80,15 +81,19 @@ public class GameController : MonoBehaviour {
         }
     }
 
-    public void ScoreUp() {
+    public void NewSynchronization(GameObject syncDestroyed) {
         score++;
         scoreText.text = score.ToString();
+
+        syncStructsGenerator.updateLastPositionDestroyed(syncDestroyed);
+        syncStructsGenerator.GenerateSyncs();
     }
 
     void CheckStart() {
         if(Input.GetMouseButtonDown(0)) {
-            //Player as dynamic and add up impulse
+            //Player as dynamic and add up impulse to impulse at start
             player.GetComponent<Rigidbody2D>().isKinematic = false;
+            player.GetComponent<Rigidbody2D>().AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
 
             //States things
             gameState = GameState.PLAYING;
