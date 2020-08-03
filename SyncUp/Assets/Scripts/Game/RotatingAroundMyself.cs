@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//Rota los syncs sobre su propio eje 
 public class RotatingAroundMyself : MonoBehaviour {
 
     float rotatingSpeed;

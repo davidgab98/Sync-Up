@@ -60,7 +60,7 @@ public class PlayerCollisions : MonoBehaviour {
             synchroCompleted = true;
         }
 
-        return synchroCompleted;
+        return synchroCompleted; 
     }
 
     void TeleportPlayer(GameObject syncStructure) {

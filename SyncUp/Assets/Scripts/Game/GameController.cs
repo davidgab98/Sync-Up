@@ -40,7 +40,7 @@ public class GameController : MonoBehaviour {
             GameController.instance = this;
         } else if(GameController.instance != this) {
             Destroy(gameObject);
-            Debug.LogError("GameController instantiate for 2 time. This wouldn't has to happen.");
+            Debug.LogError("GameController instantiated twice. This wouldn't has to happen.");
         }
 
         //Player

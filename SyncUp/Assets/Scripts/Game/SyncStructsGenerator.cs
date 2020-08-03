@@ -5,8 +5,10 @@ using UnityEngine;
 public class SyncStructsGenerator : MonoBehaviour {
 
     public List<GameObject> syncs; //Syncs can be generated
+    public List<GameObject> saws; //Saws can be generated
 
     public float[] defaultPositions; //Default positions for syncs
+
     GameObject[] takenPositions;           //Indicates if the position is taken //null = free position
     int lastPositionDestroyedIndex;       //Indicate the last position where a sync was destroyed for avoid generate one there because player may be there
 
@@ -25,16 +27,21 @@ public class SyncStructsGenerator : MonoBehaviour {
             }
         }
     }
-
+    
     public void GenerateSyncs() {
-        GameObject syncToGenerate = getNextSyncToGenerate();
+        GenerateSyncWithSmall();
+        GenerateSyncWithoutSmall();
+    }
 
+    void GenerateSyncWithSmall() {
+        //CALCULAR CUANTOS SYNCS CON SMALL GENERAR
+        GameObject syncToGenerate = getNextSyncToGenerate();
         if(syncToGenerate != null) {
             List<int> freePositionsIndex = GetFreePositionsIndex();
             if((syncToGenerate.tag != "teleSync" && freePositionsIndex.Count > 0) || freePositionsIndex.Count > 1) { //Si no es teleSync y queda al menos 1 posicion libre O si quedan mas de 1 posicion libre
-                
+
                 if(syncToGenerate.tag == "teleSync") {
-                    InstantiateTeleSync(freePositionsIndex);
+                    InstantiateTeleSync(syncToGenerate, freePositionsIndex);
                 } else {
                     InstantiateNormalSync(syncToGenerate, freePositionsIndex);
                 }
@@ -42,7 +49,31 @@ public class SyncStructsGenerator : MonoBehaviour {
         }
     }
 
-    void InstantiateTeleSync(List<int> freePositions) { 
+    void GenerateSyncWithoutSmall() {
+        GameObject sawToGenerate = getNextSawToGenerate();
+        List<int> freePositionsIndex = GetFreePositionsIndex();
+        if(freePositionsIndex.Count > 0) {
+            InstantiateNormalSync(sawToGenerate, freePositionsIndex);
+        }
+    }
+
+    void InstantiateTeleSync(GameObject syncToGenerate, List<int> freePositionsIndex) { 
+        int firstRandomIndexPosition  = freePositionsIndex[Random.Range(0, freePositionsIndex.Count)]; //A random position of freePositionsIndex
+        int secondRandomIndexPosition = firstRandomIndexPosition;
+
+        while(firstRandomIndexPosition == secondRandomIndexPosition) {
+            secondRandomIndexPosition = freePositionsIndex[Random.Range(0, freePositionsIndex.Count)];
+        }
+
+        //First TeleSync 
+        float firstPositionToGenerate = defaultPositions[firstRandomIndexPosition];
+        Instantiate(syncToGenerate, new Vector3(0, firstPositionToGenerate, 0), Quaternion.identity);
+        takenPositions[firstRandomIndexPosition] = syncToGenerate; 
+
+        //Second TeleSync
+        float secondPositionToGenerate = defaultPositions[secondRandomIndexPosition];
+        Instantiate(syncToGenerate, new Vector3(0, secondPositionToGenerate, 0), Quaternion.identity);
+        takenPositions[secondRandomIndexPosition] = syncToGenerate; 
 
     }
 
@@ -63,6 +94,16 @@ public class SyncStructsGenerator : MonoBehaviour {
         nextSyncToGenerate = syncs[num];
 
         return nextSyncToGenerate;
+    }
+
+    GameObject getNextSawToGenerate() {
+        GameObject nextSawToGenerate = null;
+
+        //Temporarily it's random, in future will be with probabilities for each type of sync
+        int num = Random.Range(0, saws.Count);
+        nextSawToGenerate = saws[num];
+
+        return nextSawToGenerate;
     }
 
     List<int> GetFreePositionsIndex() {

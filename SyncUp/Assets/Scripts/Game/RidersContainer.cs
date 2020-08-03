@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//Para syncs con 2 riders (por ejemplo, 1 bigcirle y un saw): Asigna aleatoriamente posiciones a ambos 
+    //de forma que siempre haya un hueco en medio para poder sincronizar
+
 public class RidersContainer : MonoBehaviour {
 
     float horizontalLimitLeft, horizontalLimitRight;

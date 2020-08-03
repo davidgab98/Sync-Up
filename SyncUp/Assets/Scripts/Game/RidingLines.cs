@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//Mueve los syncs en sus respectivas lineas y los mantiene dentro de los limites horizontales
 public class RidingLines : MonoBehaviour {
     Rigidbody2D rb2d;
 
@@ -34,13 +35,14 @@ public class RidingLines : MonoBehaviour {
         }
     }
 
-    void Ride() {
-        rb2d.MovePosition(rb2d.position + new Vector2(rideSpeed, 0) * Time.fixedDeltaTime);
-    }
-
     void KeepBetweenBounds() {
         if(transform.position.x < horizontalLimitLeft || transform.position.x > horizontalLimitRight) {
             rideSpeed *= -1;
         }
     }
+
+    void Ride() {
+        rb2d.MovePosition(rb2d.position + new Vector2(rideSpeed, 0) * Time.fixedDeltaTime);
+    }
+
 }
