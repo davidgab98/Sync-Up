@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Schema;
 using UnityEngine;
 
 //Mueve los syncs en sus respectivas lineas y los mantiene dentro de los limites horizontales

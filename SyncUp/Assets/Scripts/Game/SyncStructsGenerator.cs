@@ -2,10 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+public struct Estructures{
+    public List<GameObject> estructures;
+    public int[]            apparitionProbability;
+}
+*/
+
 public class SyncStructsGenerator : MonoBehaviour {
 
-    public List<GameObject> syncs; //Syncs can be generated
-    public List<GameObject> saws; //Saws can be generated
+    public List<GameObject> syncs; //Syncs can be generated 
+    public List<GameObject> saws; //Saws can be generated   
+    //public int[] syncsProbabilities;
+    //public int[] sawsProbabilities;
 
     public float[] defaultPositions; //Default positions for syncs
 
@@ -29,12 +38,13 @@ public class SyncStructsGenerator : MonoBehaviour {
     }
     
     public void GenerateSyncs() {
+        UpdateSawsInTable();
         GenerateSyncWithSmall();
         GenerateSyncWithoutSmall();
     }
 
     void GenerateSyncWithSmall() {
-        //CALCULAR CUANTOS SYNCS CON SMALL GENERAR
+        //CALCULAR CUANTOS SYNCS CON SMALL GENERAR y hacer for (segun nivel y randomRange)
         GameObject syncToGenerate = getNextSyncToGenerate();
         if(syncToGenerate != null) {
             List<int> freePositionsIndex = GetFreePositionsIndex();
@@ -53,7 +63,27 @@ public class SyncStructsGenerator : MonoBehaviour {
         GameObject sawToGenerate = getNextSawToGenerate();
         List<int> freePositionsIndex = GetFreePositionsIndex();
         if(freePositionsIndex.Count > 0) {
-            InstantiateNormalSync(sawToGenerate, freePositionsIndex);
+            GameObject sawGenerated = InstantiateNormalSync(sawToGenerate, freePositionsIndex);
+            //Cogemos el componente saw y le ponemos los valores correspondientes de numero maximo en mesa (segun nivel y randomRange)
+            //sawGenerated.GetComponent<Saw>().maxSyncsInTable = 2;
+        }
+    }
+
+    //Incrementa en 1 el numero de sincronizaciones que llevan las saws en mesa y elimina las correspondientes
+    void UpdateSawsInTable() {
+        //Recorremos los objetos en mesa
+        for(int i = 0; i < takenPositions.Length; i++) {
+            //Comprobamos los que sean saws
+            if(takenPositions[i] != null && takenPositions[i].transform.CompareTag("sawEstructure")) {
+                Saw sawComponent = takenPositions[i].GetComponent<Saw>();
+                //Incrementamos en 1 su contador de sincronizaciones
+                sawComponent.countSyncsInTable++;
+                //Destruimos los que hayan llegado a su maximo de sincronizaciones
+                if(sawComponent.countSyncsInTable >= sawComponent.maxSyncsInTable) {
+                    Destroy(takenPositions[i]);
+                    takenPositions[i] = null;
+                }
+            }
         }
     }
 
@@ -67,23 +97,25 @@ public class SyncStructsGenerator : MonoBehaviour {
 
         //First TeleSync 
         float firstPositionToGenerate = defaultPositions[firstRandomIndexPosition];
-        Instantiate(syncToGenerate, new Vector3(0, firstPositionToGenerate, 0), Quaternion.identity);
-        takenPositions[firstRandomIndexPosition] = syncToGenerate; 
+        GameObject teleSync1Clone = Instantiate(syncToGenerate, new Vector3(0, firstPositionToGenerate, 0), Quaternion.identity);
+        takenPositions[firstRandomIndexPosition] = teleSync1Clone; 
 
         //Second TeleSync
         float secondPositionToGenerate = defaultPositions[secondRandomIndexPosition];
-        Instantiate(syncToGenerate, new Vector3(0, secondPositionToGenerate, 0), Quaternion.identity);
-        takenPositions[secondRandomIndexPosition] = syncToGenerate; 
+        GameObject teleSync2Clone = Instantiate(syncToGenerate, new Vector3(0, secondPositionToGenerate, 0), Quaternion.identity);
+        takenPositions[secondRandomIndexPosition] = teleSync2Clone; 
 
     }
 
-    void InstantiateNormalSync(GameObject syncToGenerate, List<int> freePositionsIndex) { 
+    GameObject InstantiateNormalSync(GameObject syncToGenerate, List<int> freePositionsIndex) { 
         int randomIndexPosition  = freePositionsIndex[Random.Range(0, freePositionsIndex.Count)]; //A random position of freePositionsIndex
         float positionToGenerate = defaultPositions[randomIndexPosition]; 
 
-        Instantiate(syncToGenerate, new Vector3(0, positionToGenerate, 0), Quaternion.identity);
+        GameObject syncClone = Instantiate(syncToGenerate, new Vector3(0, positionToGenerate, 0), Quaternion.identity);
 
-        takenPositions[randomIndexPosition] = syncToGenerate; //Put the new position taken to true
+        takenPositions[randomIndexPosition] = syncClone; //Put the new position taken to true
+
+        return syncClone;
     }
 
     GameObject getNextSyncToGenerate() {
